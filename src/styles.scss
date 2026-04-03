@@ -1,1 +1,126 @@
-/* You can add global styles to this file, and also import other style files */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Hide horizontal scrollbar */
+.log-scroll {
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.log-scroll::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+
+.log-scroll::-webkit-scrollbar-thumb:hover {
+    background-color: #94a3b8;
+}
+
+/* ===== Firefox ===== */
+.log-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: #ded6b4a7 transparent;
+}
+
+.scrollX {
+    overflow-x: scroll;
+    overflow-y: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: #ded6b4a7 transparent;
+}
+
+.scrollX::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+
+.scrollX::-webkit-scrollbar-thumb:hover {
+    background-color: #ded6b4a7;
+}
+
+/* ===== Firefox ===== */
+
+.scrollX::-webkit-scrollbar {
+    height: 12px;
+    /* IMPORTANT for horizontal scroll */
+}
+
+.scrollX::-webkit-scrollbar-thumb {
+    background-color: #ded6b4a7;
+    border-radius: 10px;
+}
+
+
+.josefin {
+    font-family: "Josefin Sans", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-style: normal;
+}
+
+.quicksand {
+    font-family: "Quicksand", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+}
+
+.exile {
+    font-family: "Exile", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 300;
+    font-style: normal;
+}
+
+.comforter {
+    font-family: "Comforter Brush", cursive;
+    font-weight: 400;
+    font-style: normal;
+}
+
+
+.garamond {
+    font-family: "Cormorant Garamond", serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+}
+
+.test {
+    border: 2px solid green;
+}
+
+/* HTML: <div class="loader"></div> */
+.loader {
+    aspect-ratio: 2;
+    --_g: no-repeat radial-gradient(circle closest-side, #fff 100%, transparent);
+    background:
+        var(--_g) 12% 50%,
+        var(--_g) 50% 50%,
+        var(--_g) 88% 50%;
+    background-size: calc(100%/3) 35%;
+    animation: l3 1s infinite linear;
+}
+
+@keyframes l3 {
+    20% {
+        background-position: 0% 0%, 50% 50%, 100% 50%
+    }
+
+    40% {
+        background-position: 0% 100%, 50% 0%, 100% 50%
+    }
+
+    60% {
+        background-position: 0% 50%, 50% 100%, 100% 0%
+    }
+
+    80% {
+        background-position: 0% 50%, 50% 50%, 100% 100%
+    }
+}
+
+input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 1000px #261f2c inset !important;
+    -webkit-text-fill-color: #f7716a !important;
+    transition: background-color 5000s ease-in-out 0s;
+}
