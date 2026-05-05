@@ -32,11 +32,11 @@
     "gsap": "^3.14.2",
     "monaco-editor": "^0.55.1",
     "rxjs": "~7.8.0",
-    "tslib": "^2.3.0"
+    "tslib": "^2.3.0",
+    "@angular/cli": "^21.0.4",
   },
   "devDependencies": {
     "@angular/build": "^21.0.4",
-    "@angular/cli": "^21.0.4",
     "@angular/compiler-cli": "^21.0.0",
     "jsdom": "^27.1.0",
     "tailwind-scrollbar": "^3.1.0",
