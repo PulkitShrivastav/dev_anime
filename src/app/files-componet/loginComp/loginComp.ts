@@ -13,7 +13,8 @@ import { MyUsers } from '../../Services/models';
   imports: [NgClass, ReactiveFormsModule],
   template: `
 
-    <div class="p-1 relative overflow-hidden rounded-lg w-[50vw]">
+    <div class="relative top-0 left-0 w-[100%] z-[100]">
+      <div class="p-1 relative overflow-hidden rounded-lg">
       <div class="relative z-[4] h-full w-full rounded-lg bg-[#F5F5F5] overflow-hidden border-2 border-[#474554]">
         <div class="w-full p-4 text-[white] text-[14px] quicksand font-medium bg-[#474554]">Log In.</div>
         <div class="w-full h-[50vh] flex flex-col items-center justify-center">
@@ -74,6 +75,7 @@ import { MyUsers } from '../../Services/models';
           </div>
         </div>
       </div>
+    </div>
     </div>
 
   `,

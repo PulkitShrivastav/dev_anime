@@ -13,7 +13,8 @@ import { PopUpService } from '../../AppServices/pop-up-service';
   selector: 'app-user-comp',
   imports: [LoginComp, SingUpComp, VerifyOTPComp, ForgotPassComp, ResetPassComp, NgClass],
   template: `
-    <div class="absolute top-0 right-0 text-[14px] font-extrabold bg-[black] text-[white] z-[5000]
+    <div class="relative top-[10%] z-[500] w-[1536px] bg-[green]">
+      <div class="absolute w-[400px] top-0 right-0 text-[14px] font-extrabold bg-[black] text-[white]
     m-4 rounded-lg flex items-center justify-center gap-4 p-4">
       <span (click)="clicked('login')">login</span>
       <span (click)="clicked('signup')">signup</span>
@@ -22,7 +23,8 @@ import { PopUpService } from '../../AppServices/pop-up-service';
       <span (click)="clicked('reset')">reset</span>
       <span (click)="trigger()">trigger</span>
     </div>
-    <div class="absolute quicksand flex items-center justify-center top-0 h-[100vh] w-full bg-[#F5F5F5]">
+    </div>
+    <div class="absolute quicksand flex items-center justify-center top-0 h-[100vh] w-[1536px] bg-[#F5F5F5]">
         @if (selectedComp() === 'login'){
           <div class="relative">
             <div  (click)="handleBack()" class="absolute top-0 right-0 z-[5] m-2 rounded-full" 
