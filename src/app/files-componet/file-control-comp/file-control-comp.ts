@@ -11,10 +11,10 @@ import { gsap } from 'gsap';
         (pointerleave)="hovers = false"
         (click)="changeControlDivs()"
         [ngClass]="getMyClass()">
-        <div class="flex flex-col items-center"
+        <div class=" flex flex-col items-center"
           [ngClass]="getControl()">
             <span>{{myName()}}</span>
-            <div [id]="myIdentifier()" class="w-[50px] rounded-full h-[2px] bg-[#ded6b4]"></div>
+            <!-- <div [id]="myIdentifier()" class="w-[50px] rounded-full h-[2px] bg-[#ded6b4]"></div> -->
             <!-- [ngClass]="appSyncServ.selectedControl() === myIdentifier() ? 'selectIdent' : null" -->
         </div>
     </div>

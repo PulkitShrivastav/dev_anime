@@ -7,8 +7,8 @@ import { NgClass } from '@angular/common';
   selector: 'app-common-mssg-bar',
   imports: [Loader, NgClass],
   template: `
-    <div class="w-full fixed z-[2000] flex justify-center">
-      <div id="commonMssgBar" class=" p-1">
+    <div id="commonMssgBar" class="w-full fixed z-[2000] flex justify-center">
+      <div class=" p-1">
       <div class="flex items-center justify-center gap-1 text-[#12091a] bg-[#ded6b4] josefin w-fit border-2 border-[#a67805] py-2 px-4 rounded-lg">
         <p id="commonMssgText">{{this.commonMssgServ.commonMssg()}}</p>
         <span id="commonMssgLoader" [ngClass]="commonMssgServ.loader() ? null : 'hidden' "><app-loader /></span>

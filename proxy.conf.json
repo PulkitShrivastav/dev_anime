@@ -1,10 +1,8 @@
-const target = process.env.API_URL;
-
-module.exports = {
-    '/api': {
-        target,
+{
+    "/api": {
+        "target": "http://localhost:5000",
         "secure": false,
         "changeOrigin": true,
         "logLevel": "debug"
     }
-};
+}

@@ -46,7 +46,7 @@ import { FilesService } from '../../AppServices/files-service';
             </div>
           } @else {
             <app-rise-button [label]="appSyncServ.formatText(button)", [buttonID]="button" 
-            [width]="'w-[7vw]'" [padding]="'p-2'" (cusClick)="emitterButton(button)" />
+            [width]="'w-[100px]'" [padding]="'p-2'" (cusClick)="emitterButton(button)" />
           }
         }
     </div>

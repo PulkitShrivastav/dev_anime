@@ -46,7 +46,7 @@ import { MyUsers } from '../../Services/models';
               </svg>
             </div>
           </div>
-          <div class="w-full flex items-center quicksand justify-center gap-4 mt-8">
+          <div class="w-full flex items-center quicksand justify-center gap-4 mt-8 mx-4">
               <button id="login" 
               (pointerenter)="pointEnter('login')" 
               (pointerleave)="pointLeave('login')"

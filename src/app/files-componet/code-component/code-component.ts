@@ -17,7 +17,7 @@ import { Action } from 'rxjs/internal/scheduler/Action';
 
 @Component({
   selector: 'app-code-component',
-  imports: [NgClass, UserControlButtonComp, AnimeComponent, FileControlComp, UserInsertGrid, TextEditorComp],
+  imports: [NgClass, UserControlButtonComp, AnimeComponent, FileControlComp, TextEditorComp],
   template: `
     <div id="docDiv" class="relative bg-[#2a283d] h-[86vh] w-full p-2 rounded-r-md rounded-b-md overflow-hidden">
       <div class="h-full w-full ">
@@ -79,24 +79,16 @@ import { Action } from 'rxjs/internal/scheduler/Action';
             <!-- File Controls Logic UI -->
              <div class="rounded-lg h-[82%] overflow-hidden mt-4 border-2 border-[#6a7987] bg-[#12091a]">
               
-              <div class="w-full cursor-pointer grid grid-cols-2 border-b-2 border-[#6a7987]">
+              <div class="w-full cursor-pointer border-b-2 border-[#6a7987]">
                 <!-- Control Buttons -->
                 <app-file-control-comp
                   myName="Control Buttons" 
                   myIdentifier="control" 
                   borderClass="border-r-2 border-[#6a7987]" /> 
-                  <!-- Insert Grids -->
-                <app-file-control-comp
-                  myName="Insert Grids"
-                  myIdentifier="insert"
-                  borderClass="" /> 
               </div>
 
               <!-- Control Buttons -->
               <app-user-control-button-comp #userButtonControl (controlClicked)="trigger($event)"/>
-
-              <!-- Insert Grid -->
-              <app-user-insert-grid />
 
              </div>
           </div>
