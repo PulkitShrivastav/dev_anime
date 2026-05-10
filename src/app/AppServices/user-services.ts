@@ -9,7 +9,8 @@ export class UserServices {
     firstname: '',
     lastname: '',
     email_address: '',
-    myPass: ''
+    myPass: '',
+    otp_code: ''
   }
 
   initialiseVerify = signal(false)

@@ -14,7 +14,7 @@ import { Router } from '@angular/router';
   imports: [ReactiveFormsModule, NgClass, Loader],
   template: `
 
-  <div class="w-[50vw] rounded-lg overflow-hidden border-2 border-[#474554]">
+  <div class="w-[50rem] rounded-lg overflow-hidden border-2 border-[#474554]">
 
     <div class="text-[white] bg-[#474554] p-4 font-medium">
       <span>Please Provide OTP From Your Email.</span>
@@ -49,7 +49,7 @@ import { Router } from '@angular/router';
         <span class="block" id="login_text">Verify</span>
       </button>
 
-      <button class="text-[14px]" (click)="userServ.checkResend() ? submit() : null"
+      <button class="text-[14px]" (click)="userServ.checkResend() ? resendOTP() : null"
       [ngClass]="reactiveElems['checkResend']() ? 'ExpireButnActv' : 'ExpireButnDactv cursor-default' ">
         @if (!userServ.initialiseVerify()){
           <span class="flex justify-center"><app-loader /></span>
@@ -189,6 +189,7 @@ export class VerifyOTPComp {
     for (let id of _IDS) {
       otp_code = otp_code + this.formControlElems[id].value
     }
+    this.userServ.user_login_details.otp_code = otp_code
     this.http.put<Record<'message', string>>('/api/user/verify_otp', this.userServ.user_login_details).subscribe(data => {
       const mssg = data.message
       console.log(data.message)
@@ -216,6 +217,10 @@ export class VerifyOTPComp {
           }, 1000); break
       }
     })
+  }
+
+  resendOTP() {
+
   }
 
   forEveryBox(state: 'error' | 'success' | 'warning') {

@@ -9,7 +9,7 @@ import { CommonMssgService } from '../../AppServices/common-mssg-service';
   selector: 'app-forgot-pass-comp',
   imports: [ReactiveFormsModule, NgClass],
   template: `
-    <div class="w-[40vw] rounded-lg overflow-hidden border-2 border-[#2a2a2a]">
+    <div class="w-[40rem] rounded-lg overflow-hidden border-2 border-[#2a2a2a]">
       <div class="p-4 bg-[#474554] font-medium text-[white]">Please Verify You Email.</div>
       <div class="quicsand text-[16px] text-[#2a2a2a] p-2 m-2  rounded-lg">
         Please enter your email address to begin the verification process.
