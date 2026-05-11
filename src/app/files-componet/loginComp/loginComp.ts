@@ -183,9 +183,9 @@ export class LoginComp {
   }
 
   demoMode() {
+    this.commonMssgServ.popMessage('Demo Login, Please wait.')
     this.http.put<MyUsers>('/api/user/demo-login', {}, { withCredentials: true }).subscribe(data => {
       if (data.message === 'Demo-Login') {
-        this.commonMssgServ.popMessage('Demo Login, Please wait.')
         setTimeout(() => {
           this.commonMssgServ.commonMssgHide()
           this.router.navigate(['/files'])

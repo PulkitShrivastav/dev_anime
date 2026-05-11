@@ -116,8 +116,6 @@ export class App {
   }
 
   desktopMode() {
-    this.commonMssgServ.popMessage("Button Clicked")
-
     this.widthOK.set(true)
   }
 

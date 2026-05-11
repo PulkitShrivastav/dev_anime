@@ -12,7 +12,7 @@ import { PopUpService } from '../../AppServices/pop-up-service';
   selector: 'app-sing-up-comp',
   imports: [ReactiveFormsModule, NgClass],
   template: `
-    <div class="w-[45rem] oerflow-hidden border-2 border-[#2a2a2a] font-bold rounded-lg">
+    <div class="w-[800px] oerflow-hidden border-2 border-[#2a2a2a] font-bold rounded-lg">
       <div class="bg-[#474554] text-[white] text-[14px] p-4 font-medium quicksand">Sign Up.</div>
       <div class="h-[50vh]" [formGroup]="signUpForm">
         <div class="grid grid-cols-2 items-center justify-items-center m-4 gap-4">
