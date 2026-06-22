@@ -10,7 +10,7 @@ import { Loader } from "./files-componet/loader/loader";
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, HeaderComp, CommonMssgBar, Loader],
+  imports: [RouterOutlet, HeaderComp, CommonMssgBar],
   template: `
   <div class="wrapper" [class.desktopSite]="widthOK()">
     <app-header-comp />
