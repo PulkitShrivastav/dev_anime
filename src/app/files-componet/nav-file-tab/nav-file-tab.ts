@@ -3,9 +3,9 @@ import { NgClass } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { AppSyncService } from '../../AppServices/app-sync-service';
 import { FilesService } from '../../AppServices/files-service';
-import { gsap } from 'gsap/gsap-core';
 import { HttpClient } from '@angular/common/http';
 import { CommonMssgService } from '../../AppServices/common-mssg-service';
+import { UserServices } from '../../AppServices/user-services';
 
 @Component({
   selector: 'app-nav-file-tab',
@@ -98,6 +98,7 @@ export class NavFileTab {
   myFilename = input.required<string>()
   hoverExternal = signal(false)
   commonMssgServ = inject(CommonMssgService)
+  userServ = inject(UserServices)
 
   actvTab() {
     if (this.appSyncServ.activeFile() === null) {
@@ -111,7 +112,14 @@ export class NavFileTab {
 
   closeThisFile() {
     const files = this.appSyncServ.openedFiles()
-    if (files.length === 1) {
+    const fileToClose = this.myFilename()
+    if (fileToClose === "untitled_file") {
+      this.commonMssgServ.commonMssg.set("Please rename the file before closing.")
+      this.commonMssgServ.commonMssgShow()
+      setTimeout(() => {
+        this.commonMssgServ.commonMssgHide()
+      }, 1500)
+    } else if (files.length === 1) {
       this.commonMssgServ.commonMssg.set('Cannot Close This File.')
       this.commonMssgServ.commonMssgShow()
       setTimeout(() => {
@@ -126,7 +134,6 @@ export class NavFileTab {
     }
     else {
       let queue = ''
-      const fileToClose = this.myFilename()
       let newFileArray = []
       for (let file of files) {
         if (file.file_name !== fileToClose) {
@@ -134,6 +141,14 @@ export class NavFileTab {
           newFileArray.push(file)
         }
       }
+      console.log(queue)
+      console.log("UserID =>", this.userServ.user_login_details.guest_id)
+      const requestBody = {
+        userID: this.userServ.user_login_details.guest_id,
+        openFiles: queue
+      }
+      this.http.put("api/closefile", requestBody, { withCredentials: true, }).subscribe(data => console.log(data, `Closed File ${fileToClose}`))
+
       if (fileToClose === this.appSyncServ.activeFile().file_name) {
         for (let [index, file] of this.appSyncServ.openedFiles().entries()) {
           if (file.file_name === this.myFilename()) {
@@ -169,5 +184,6 @@ export class NavFileTab {
       }
     }
   }
+
 
 }

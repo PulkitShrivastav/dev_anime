@@ -18,11 +18,11 @@ import { gsap } from 'gsap';
       
       <div (click)="focusThisButton()"
       [ngClass]="fileServ.focusedButton() === label() ? 'hidden' : null ">
-        {{appSyncServ.formatText(label())}}
+        {{label()}}
       </div>
 
       <input #myInput [formControl]="inputControl" spellcheck="false" type="text" 
-      class="caret-[#ffb703] w-[6vw] text-center outline-none bg-[transparent] inline-block whitespace-nowrap"
+      class="caret-[#ffb703] w-[6vw] text-center outline-none bg-[transparent] inline-block whitespace-nowrap selection:bg-[#aca9bb] selection:text-[white]"
       [ngClass]="fileServ.focusedButton() === label() ? null :'hidden' "
       (keydown)="handleKeyDown($event)"
       (blur)="handleBlur()">
@@ -82,7 +82,7 @@ export class EditButtonsComp {
 
   handleKeyDown(event: KeyboardEvent) {
     if (event.key === 'Enter') {
-      const newName = this.inputControl.getRawValue()?.toLowerCase().replaceAll(' ', '_') ?? ''
+      const newName = this.inputControl.getRawValue()?.replaceAll(' ', '_') ?? ''
       if (/^\d/.test(newName)) {
         this.mssgAlive.emit("Button Name CANNOT Start With An INTEGER.")
         this.inputControl.setValue('')
@@ -93,6 +93,9 @@ export class EditButtonsComp {
         if (oldButtons) {
           if (newName?.length !== 0 && newName !== oldName) {
             let buttons = oldButtons.replace(oldName, newName)
+            // console.log("Old Butns: ", oldButtons)
+            console.log(buttons)
+
             localStorage.setItem(`${this.appSyncServ.activeFile().file_name}_buttons`, buttons)
             this.popUpServ.getFileButtons()
             this.appSyncServ.editModeOn.set(false)
@@ -177,7 +180,7 @@ export class EditButtonsComp {
   }
 
   ngAfterViewInit() {
-    this.inputControl.setValue(this.appSyncServ.formatText(this.label()))
+    this.inputControl.setValue(this.label())
   }
 
 }

@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, ElementRef, inject, ViewChild } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { MyFilesComp } from "./myFilesComp/myFilesComp";
 import { AppIntiateService } from '../AppServices/app-intiate-service';
@@ -9,6 +9,10 @@ import { PopUpComp } from './popUpComp/popUpComp';
 import { NavFileTab } from './nav-file-tab/nav-file-tab';
 import { ConsoleComp } from './console-comp/console-comp';
 import { PopUpService } from '../AppServices/pop-up-service';
+import { gsap } from 'gsap/all';
+import { Observer } from 'gsap/all';
+
+gsap.registerPlugin(Observer)
 
 @Component({
   selector: 'app-files-componet',
@@ -23,7 +27,7 @@ import { PopUpService } from '../AppServices/pop-up-service';
         <!-- Grid-Column-1 -->
         <div class="w-full h-full col-span-9 row-span-4" >
 
-          <div class="flex h-[35px]">
+          <div #my_ref class="flex h-[35px] w-full overflow-x-scroll overflow-y-hidden hide-scrollbar">
             @for ( file of appSyncServ.openedFiles(); track $index){
               <app-nav-file-tab [myFilename]="file.file_name" />
             }
@@ -47,10 +51,19 @@ import { PopUpService } from '../AppServices/pop-up-service';
 
   `,
   styles: `
+  .hide-scrollbar {
+    scrollbar-width: none;      /* Firefox */
+    -ms-overflow-style: none;   /* IE/Edge */
+  }
 
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;              /* Chrome, Safari, Edge */
+  }
   `,
 })
 export class FilesComponet {
+
+  @ViewChild('my_ref') my_ref!: ElementRef<HTMLDivElement>
 
   appSyncServ = inject(AppSyncService)
   appInitServ = inject(AppIntiateService)
@@ -60,6 +73,22 @@ export class FilesComponet {
   ngOnInit() {
     this.appInitServ.InitiateWebApp()
     this.appSyncServ.isFileRouteActive.set(true)
+  }
+
+  ngAfterViewInit() {
+
+    Observer.create({
+      target: this.my_ref.nativeElement,
+
+      type: "wheel,touch,pointer",
+
+      preventDefault: true,
+
+      onChange: (self) => {
+        this.my_ref.nativeElement.scrollLeft += self.deltaX + self.deltaY;
+      }
+    });
+
   }
 
 }

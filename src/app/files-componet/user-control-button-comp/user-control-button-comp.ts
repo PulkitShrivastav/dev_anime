@@ -45,7 +45,7 @@ import { FilesService } from '../../AppServices/files-service';
               <app-edit-buttons-comp [label]="button" (mssgAlive)="showErrorMssg($event)" />
             </div>
           } @else {
-            <app-rise-button [label]="appSyncServ.formatText(button)", [buttonID]="button" 
+            <app-rise-button [label]="button", [buttonID]="button" 
             [width]="'w-[100px]'" [padding]="'p-2'" (cusClick)="emitterButton(button)" />
           }
         }

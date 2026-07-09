@@ -150,43 +150,51 @@ export class NewFileComp {
   submit() {
     const projectName = this.inputControl.getRawValue()
     let newName = projectName?.toLowerCase().replaceAll(' ', '_') ?? ''
-    this.http.get<AllFiles[]>('api/newfile', { withCredentials: true }).subscribe(data => {
-      console.log(data)
-      let dataOBJ = {
-        file_name: newName,
-        js_code: data[0].js_code,
-        css_code: data[0].css_code,
-        html_code: data[0].html_code,
-        buttons: data[0].buttons,
-        action: 'save'
-      }
-      console.log(dataOBJ)
-      this.http.put<AllFiles[]>('api/savefile', dataOBJ, { withCredentials: true }).subscribe(data => {
+    if (/^\d/.test(newName)) {
+      this.popUpServ.myMssg.set("File Name CANNOT Start with an Integer.")
+      this.mssgAnime()
+      this.inputControl.setValue('')
+      this.wrongInputAnime()
+    } else {
+      this.http.get<AllFiles[]>('api/newfile', { withCredentials: true }).subscribe(data => {
         console.log(data)
-        const newFile: AllFiles = {
-          fileID: data[0].fileID,
+        let dataOBJ = {
           file_name: newName,
           js_code: data[0].js_code,
           css_code: data[0].css_code,
           html_code: data[0].html_code,
-          buttons: data[0].buttons
+          buttons: data[0].buttons,
+          action: 'save'
         }
-        this.appSyncServ.openedFiles.update(v => v = [...v, newFile])
-        this.appSyncServ.allFiles.update(v => v = [...v, {
-          file_id: data[0].fileID,
-          file_name: `${newName}`
-        }])
-        this.appInitServ.setFilesInMemory()
-        this.route.navigate(['/files', newName])
-        this.appSyncServ.setSnackMssg('New Project Create.')
-        this.appSyncServ.showMssg('appear')
-        this.appSyncServ.showMssg('disappear')
-        this.inputControl.setValue('')
-        this.popUpServ.closePopUp()
-        this.focusedOnce = false
-        this.appSyncServ.isSaved.update(v => ({ ...v, [newName]: true }))
+        console.log(dataOBJ)
+        this.http.put<AllFiles[]>('api/savefile', dataOBJ, { withCredentials: true }).subscribe(data => {
+          console.log(data)
+          const newFile: AllFiles = {
+            fileID: data[0].fileID,
+            file_name: newName,
+            js_code: data[0].js_code,
+            css_code: data[0].css_code,
+            html_code: data[0].html_code,
+            buttons: data[0].buttons
+          }
+          this.appSyncServ.openedFiles.update(v => v = [...v, newFile])
+          this.appSyncServ.allFiles.update(v => v = [...v, {
+            file_id: data[0].fileID,
+            file_name: `${newName}`
+          }])
+          this.appInitServ.setFilesInMemory()
+          this.route.navigate(['/files', newName])
+          this.appSyncServ.setSnackMssg('New Project Create.')
+          this.appSyncServ.showMssg('appear')
+          this.appSyncServ.showMssg('disappear')
+          this.inputControl.setValue('')
+          this.popUpServ.closePopUp()
+          this.focusedOnce = false
+          this.appSyncServ.isSaved.update(v => ({ ...v, [newName]: true }))
+        })
       })
-    })
+    }
+
   }
 
   ngOnInit() {

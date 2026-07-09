@@ -8,7 +8,7 @@ import { AppIntiateService } from '../../AppServices/app-intiate-service';
   template: `
       <iframe #animeComp 
         class="w-full h-full"
-        sandbox="allow-forms allow-scripts"></iframe>
+        sandbox="allow-forms allow-same-origin allow-scripts"></iframe>
     `,
   styles: ``,
 })
@@ -115,17 +115,14 @@ export class AnimeComponent {
       }, "*");
     });
 
-    window.onload = () => {
-      window.addEventListener('message', (event) => {
-        message = event.data
+    window.addEventListener('message', (event) => {    
+    message = event.data
         switch (message.type) {
           ${this.getButtonsCode()}
         }
       })
-    
-      ${localStorage.getItem(`${actvFile}_js`)}
 
-    }
+    ${localStorage.getItem(`${actvFile}_js`)}
     </script>
 
 </body>
@@ -133,6 +130,7 @@ export class AnimeComponent {
 </html>
 
     `
+    // console.log(code)
     return code
   }
 

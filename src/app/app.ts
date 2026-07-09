@@ -160,5 +160,9 @@ export class App {
     }
   }
 
+  ngOnDestroy() {
+    localStorage.clear()
+  }
+
 
 }

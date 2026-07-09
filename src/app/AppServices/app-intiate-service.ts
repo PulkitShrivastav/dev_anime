@@ -6,6 +6,9 @@ import { Router } from '@angular/router';
 import { FilesService } from './files-service';
 import { FileNames } from '../Services/models';
 
+type myResponse = { files: AllFiles[] }
+type res_obj = { files: FileNames[] }
+
 @Injectable({
   providedIn: 'root',
 })
@@ -31,11 +34,12 @@ export class AppIntiateService {
   }
 
   getAllFilenames() {
-    this.http.get<FileNames[]>(`/api/data/allfiles`, {
+    this.http.get<res_obj>(`/api/data/allfiles`, {
       withCredentials: true
     }).subscribe(data => {
-      this.appSyncServ.allFiles.set(data)
-      console.log(data)
+      this.appSyncServ.allFiles.set(data.files)
+      console.log(data.files)
+      console.log('Files: ', this.appSyncServ.allFiles())
     })
   }
 
@@ -46,17 +50,18 @@ export class AppIntiateService {
   }
 
   InitiateWebApp() {
-    this.http.get<AllFiles[]>(`/api/data/openfiles`, {
+    this.http.get<myResponse>(`/api/data/openfiles`, {
       withCredentials: true
     }).subscribe(data => {
       if (data) {
-        console.log(data)
+        console.log("DATA: ", data.files)
         this.getAllFilenames()
-        this.appSyncServ.openedFiles.set(data)
+        this.appSyncServ.openedFiles.set(data.files)
         this.initSave()
         this.setFilesInMemory()
         this.isLoaded.set(true)
-        this.router.navigate(['files', this.appSyncServ.openedFiles()[0].file_name])
+        // console.log("Opened Files: ", this.appSyncServ.openedFiles()[0]["file_name"])
+        this.router.navigate(['files', this.appSyncServ.openedFiles()[0]["file_name"]])
       } else {
         this.http.get<AllFiles[]>('/api/newfile', { withCredentials: true }).subscribe(data => {
           this.getAllFilenames()

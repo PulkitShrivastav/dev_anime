@@ -38,7 +38,7 @@ import { HttpClient } from '@angular/common/http';
               {{appSyncServe.formatText(myFilename())}}
             </div>
             <input [ngClass]="appSyncServe.renameMyFiles() && fileServe.focusedButton() === myFilename() ? null : 'hidden' " 
-            (blur)="onBlur()" class="bg-[transparent] caret-[#ffb703] w-[19rem] p-1 outline-none" #myInput
+            (blur)="onBlur()" class="bg-[transparent] caret-[#ffb703] w-[19rem] p-1 outline-none selection:bg-[#aca9bb] selection:text-[white]" #myInput
             (keydown)="handleKey($event)"
             [formControl]="inputControl" spellcheck="false" type="text">
           </div> 
@@ -47,7 +47,7 @@ import { HttpClient } from '@angular/common/http';
         <div class="flex justify-center items-center relative"
         [ngClass]="appSyncServe.renameMyFiles() && fileServe.focusedButton() === this.myFilename() ? 'hidden' : null ">
           <div class="p-2"
-          (click)="deleteMe()"
+          (click)="downloadMe()"
           [ngClass]="hoverMe() ? 'deleteDiv' : 'zeroOpacity'"
           (pointerenter)="checkHover('download', 'appear')"
           (pointerleave)="checkHover('download', 'disappear')">
@@ -176,6 +176,117 @@ export class FilesComp {
 
   getID(ref: string) {
     return `${this.myFilename()}_${ref}`
+  }
+
+  buildHtml() {
+    let code = `
+    
+<!DOCTYPE html><!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.10.4/gsap.min.js"></script>
+    <style>
+      /* Scrollbar Styles */
+      ::-webkit-scrollbar {
+        width: 6px;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background-color: #ded6b4a7;
+        border-radius: 999px;
+      }
+
+      ::-webkit-scrollbar-thumb:hover {
+        background-color: #ded6b4a7;
+      }
+
+      ${localStorage.getItem(`${this.myFilename()}_css`)}
+    </style>
+
+</head>
+
+<body class="bg-[black]">
+
+    ${localStorage.getItem(`${this.myFilename()}_html`)}
+
+    <script>
+    
+    function captureConsole(callback) {
+    const originalLog = console.log;
+
+      console.log = function (...args) {
+        callback(args);
+        originalLog.apply(console, args);
+      };
+    }
+    
+    captureConsole((msg) => {
+      window.parent.postMessage({
+      type: 'anime_console',
+      payload: msg
+      }, "*");
+    });
+
+    window.addEventListener('message', (event) => {    
+    message = event.data
+        switch (message.type) {
+          ${this.getButtonsCode()}
+        }
+      })
+
+    ${localStorage.getItem(`${this.myFilename()}_js`)}
+    </script>
+
+</body>
+
+</html>
+
+    `
+    // console.log(code)
+    return code
+  }
+
+  getButtonsCode() {
+    let filename = this.myFilename()
+    let fileButtons: string = localStorage.getItem(`${filename}_buttons`) ?? ''
+    let newButtons = fileButtons ? fileButtons.split('|') : []
+    let btnCode = ''
+    if (newButtons) {
+      for (let button of newButtons) {
+        btnCode = `${btnCode}
+        case ('${button}'): ${button}(); break;`
+      }
+      return btnCode
+    } else {
+      return null
+    }
+  }
+
+  downloadMe() {
+    const htmlContent = this.buildHtml()
+    const blob = new Blob([htmlContent], { type: "text/html" });
+
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${this.myFilename()}.html`;
+
+    document.body.appendChild(a);
+    a.click();
+
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
   }
 
   deleteMe() {

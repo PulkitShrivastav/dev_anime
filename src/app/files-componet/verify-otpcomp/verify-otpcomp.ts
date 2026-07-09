@@ -9,6 +9,13 @@ import { Loader } from "../loader/loader";
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 
+type loginResponse = {
+  message: string,
+  user_id: number,
+  firstname: string,
+  user_email: string,
+}
+
 @Component({
   selector: 'app-verify-otpcomp',
   imports: [ReactiveFormsModule, NgClass, Loader],
@@ -211,6 +218,14 @@ export class VerifyOTPComp {
             this.commonMssgServ.popMessageTransform('Email Verified.', 'off')
             this.reactiveElems['myMSSG_text'].set('Success.')
             this.forEveryBox('success')
+            this.http.put<loginResponse>('/api/user/login', {
+              email_address: this.userServ.user_login_details.email_address,
+              password: this.userServ.user_login_details.myPass
+            }).subscribe(data => {
+              if (data.message === "Success") {
+                this.userServ.user_login_details.guest_id === data.user_id
+              }
+            })
             setTimeout(() => {
               this.router.navigate(['files'])
             }, 1000)

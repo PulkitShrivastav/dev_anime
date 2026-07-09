@@ -15,7 +15,9 @@ export interface MyUsers {
     message: string,
     userID: number,
     username: string,
-    firstName: string,
+    firstname: string,
+    user_email: string,
+    lastname: string
 }
 
 export interface FileNames {

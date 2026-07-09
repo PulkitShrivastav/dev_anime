@@ -14,6 +14,7 @@ import { TextEditorComp } from '../text-editor-comp/text-editor-comp';
 import { HttpClient } from '@angular/common/http';
 import { PopUpService } from '../../AppServices/pop-up-service';
 import { Action } from 'rxjs/internal/scheduler/Action';
+import { CommonMssgService } from '../../AppServices/common-mssg-service';
 
 @Component({
   selector: 'app-code-component',
@@ -127,6 +128,7 @@ export class CodeComponent {
   appInitServ = inject(AppIntiateService)
   fileServ = inject(FilesService)
   cameFromRun = false
+  commonMssgServe = inject(CommonMssgService)
   fileChange$ = new ReplaySubject<string>()
   fileName = ''
   didJustLand = true
@@ -146,39 +148,46 @@ export class CodeComponent {
   }
 
   runCode() {
-    this.appSyncServ.setSnackMssg('Saving', true)
-    this.appSyncServ.showMssg('appear')
-    let action = ''
-    if (this.appSyncServ.newFile.created && this.appSyncServ.newFile.myName === this.fileName) {
-      action = 'save'
+    if (this.fileName === 'untitled_file') {
+      this.commonMssgServe.popMessage("Please provide a name for this file")
+      setTimeout(() => {
+        this.commonMssgServe.commonMssgHide()
+      }, 2000)
     } else {
-      action = 'update'
+      this.appSyncServ.setSnackMssg('Saving', true)
+      this.appSyncServ.showMssg('appear')
+      let action = ''
+      if (this.appSyncServ.newFile.created && this.appSyncServ.newFile.myName === this.fileName) {
+        action = 'save'
+      } else {
+        action = 'update'
+      }
+      this.http.put<Record<string, string>>('/api/savefile', {
+        fileName: this.fileName,
+        js_code: localStorage.getItem(`${this.fileName}_js`),
+        css_code: localStorage.getItem(`${this.fileName}_css`),
+        html_code: localStorage.getItem(`${this.fileName}_html`),
+        buttons: localStorage.getItem(`${this.fileName}_buttons`) ? localStorage.getItem(`${this.fileName}_buttons`) : '',
+        action: action
+      }, {
+        withCredentials: true
+      }).subscribe(data => {
+        setTimeout(() => {
+          this.codeComp.getCode()
+        }, 10)
+        this.textComp.isCode.set(false)
+        this.appSyncServ.isSaved()[this.fileName] = true
+        this.appSyncServ.isSelected.set('anime')
+        this.cameFromRun = true
+        setTimeout(() => {
+          this.appSyncServ.snackMssgTransition('Saved Successfully.')
+        }, 1000)
+      })
     }
-    this.http.put<Record<string, string>>('/api/savefile', {
-      fileName: this.fileName,
-      js_code: localStorage.getItem(`${this.fileName}_js`),
-      css_code: localStorage.getItem(`${this.fileName}_css`),
-      html_code: localStorage.getItem(`${this.fileName}_html`),
-      buttons: localStorage.getItem(`${this.fileName}_buttons`) ? localStorage.getItem(`${this.fileName}_buttons`) : '',
-      action: action
-    }, {
-      withCredentials: true
-    }).subscribe(data => {
-      setTimeout(() => {
-        this.codeComp.getCode()
-      }, 10)
-      this.textComp.isCode.set(false)
-      this.appSyncServ.isSaved()[this.fileName] = true
-      this.appSyncServ.isSelected.set('anime')
-      this.cameFromRun = true
-      setTimeout(() => {
-        this.appSyncServ.snackMssgTransition('Saved Successfully.')
-      }, 1000)
-    })
   }
 
   trigger(mssg: string) {
-    mssg = mssg.toLowerCase()
+    mssg = mssg
     this.codeComp.triggerIframe(mssg)
   }
 

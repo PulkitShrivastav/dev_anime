@@ -140,16 +140,23 @@ export class AddButtonComp {
     const checkButtons = localStorage.getItem(key)
     let buttons: string | null = checkButtons ? checkButtons : null
     const newButton = this.inputControl.getRawValue()?.toLowerCase().replaceAll(' ', '_') ?? ''
-    if (buttons) {
-      buttons = buttons + '|' + newButton
+    if (/^\d/.test(newButton)) {
+      this.popUpServ.myMssg.set("Button name CANNOT Start with an Integer.")
+      this.mssgAnime()
+      this.inputControl.setValue('')
+      this.wrongInputAnime()
     } else {
-      buttons = newButton
+      if (buttons) {
+        buttons = buttons + '|' + newButton
+      } else {
+        buttons = newButton
+      }
+      localStorage.setItem(key, buttons ?? '')
+      this.popUpServ.closePopUp()
+      this.inputControl.setValue('')
+      this.popUpServ.getFileButtons()
+      this.appSyncServ.isSaved.update(v => ({ ...v, [this.appSyncServ.activeFile().file_name]: false }))
     }
-    localStorage.setItem(key, buttons ?? '')
-    this.popUpServ.closePopUp()
-    this.inputControl.setValue('')
-    this.popUpServ.getFileButtons()
-    this.appSyncServ.isSaved.update(v => ({ ...v, [this.appSyncServ.activeFile().file_name]: false }))
   }
 
   close() {

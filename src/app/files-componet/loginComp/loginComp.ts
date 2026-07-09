@@ -7,6 +7,15 @@ import { HttpClient } from '@angular/common/http';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { CommonMssgService } from '../../AppServices/common-mssg-service';
 import { MyUsers } from '../../Services/models';
+import { UserServices } from '../../AppServices/user-services';
+
+type DemoModeRespone = {
+  message: string,
+  email_address: string,
+  firstname: string,
+  lastname: string,
+  user_id: number
+}
 
 @Component({
   selector: 'app-login-comp',
@@ -143,6 +152,7 @@ export class LoginComp {
   username = new FormControl()
   password = new FormControl()
   commonMssgServ = inject(CommonMssgService)
+  userServ = inject(UserServices)
 
   pointEnter(id: string) {
     gsap.to(`#${id}`, {
@@ -184,13 +194,19 @@ export class LoginComp {
 
   demoMode() {
     this.commonMssgServ.popMessage('Demo Login, Please wait.')
-    this.http.put<MyUsers>('/api/user/demo-login', {}, { withCredentials: true }).subscribe(data => {
+    this.http.put<DemoModeRespone>('/api/user/demo-login', {}, { withCredentials: true }).subscribe(data => {
+      console.log(data)
       if (data.message === 'Demo-Login') {
+        this.userServ.user_login_details.email_address = data.email_address
+        this.userServ.user_login_details.firstname = data.firstname
+        this.userServ.user_login_details.lastname = data.lastname
+        this.userServ.user_login_details.guest_id = data.user_id
         setTimeout(() => {
           this.commonMssgServ.commonMssgHide()
           this.router.navigate(['/files'])
         }, 1000)
       }
+      this.userServ.user_login_details.guest_id = 2
     })
   }
 
@@ -292,7 +308,16 @@ export class LoginComp {
           }, 1000)
         } else {
           this.commonMssgServ.popMessage('Success')
+          // console.log(data)
           this.errorAnime('success')
+          this.userServ.user_login_details.email_address = data.user_email
+          this.userServ.user_login_details.firstname = data.firstname
+          this.userServ.user_login_details.lastname = data.lastname
+          this.userServ.user_login_details.guest_id = data.userID
+          setTimeout(() => {
+            this.commonMssgServ.commonMssgHide()
+            this.router.navigate(['/files'])
+          }, 1000)
         }
       })
     }
