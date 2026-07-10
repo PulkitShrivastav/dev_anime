@@ -63,7 +63,9 @@ export class AppIntiateService {
         // console.log("Opened Files: ", this.appSyncServ.openedFiles()[0]["file_name"])
         this.router.navigate(['files', this.appSyncServ.openedFiles()[0]["file_name"]])
       } else {
-        this.http.get<AllFiles[]>('/api/newfile', { withCredentials: true }).subscribe(data => {
+        this.http.put<AllFiles[]>('/api/newfile', {
+          filename: 'untitled_file'
+        }, { withCredentials: true }).subscribe(data => {
           this.getAllFilenames()
           this.appSyncServ.openedFiles.set(data)
           this.initSave()

@@ -150,13 +150,16 @@ export class NewFileComp {
   submit() {
     const projectName = this.inputControl.getRawValue()
     let newName = projectName?.toLowerCase().replaceAll(' ', '_') ?? ''
+    console.log(newName)
     if (/^\d/.test(newName)) {
       this.popUpServ.myMssg.set("File Name CANNOT Start with an Integer.")
       this.mssgAnime()
       this.inputControl.setValue('')
       this.wrongInputAnime()
     } else {
-      this.http.get<AllFiles[]>('api/newfile', { withCredentials: true }).subscribe(data => {
+      this.http.put<AllFiles[]>('api/newfile', {
+        filename: projectName
+      }, { withCredentials: true }).subscribe(data => {
         console.log(data)
         let dataOBJ = {
           file_name: newName,
