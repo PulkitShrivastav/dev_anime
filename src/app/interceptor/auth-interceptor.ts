@@ -24,6 +24,13 @@ export class AuthInterceptor implements HttpInterceptor {
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
 
+    // if (
+    //   req.url.includes('/api/login') ||
+    //   req.url.includes('/api/refresh_token')
+    // ) {
+    //   return next.handle(req);
+    // }
+
     return next.handle(req).pipe(
 
       catchError((error: HttpErrorResponse) => {
@@ -42,11 +49,9 @@ export class AuthInterceptor implements HttpInterceptor {
 
               }),
 
-              catchError(err => {
-
-                this.router.navigate(['/login'])
+              catchError((err: HttpErrorResponse) => {
+                this.router.navigate(['login'])
                 return throwError(() => err);
-
               })
             );
         }

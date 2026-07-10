@@ -203,6 +203,7 @@ export class LoginComp {
         this.userServ.user_login_details.guest_id = data.user_id
         setTimeout(() => {
           this.commonMssgServ.commonMssgHide()
+          this.userServ.isLoggedIn.set(true)
           this.router.navigate(['/files'])
         }, 1000)
       }
@@ -304,6 +305,7 @@ export class LoginComp {
           this.commonMssgServ.popMessage('Wrong Credentials.')
           this.errorAnime('error')
           setTimeout(() => {
+            this.userServ.isLoggedIn.set(false)
             this.commonMssgServ.commonMssgHide()
           }, 1000)
         } else {
@@ -317,6 +319,7 @@ export class LoginComp {
           setTimeout(() => {
             this.commonMssgServ.commonMssgHide()
             this.router.navigate(['/files'])
+            this.userServ.isLoggedIn.set(true)
           }, 1000)
         }
       })

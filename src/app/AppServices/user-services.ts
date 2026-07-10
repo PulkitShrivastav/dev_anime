@@ -13,6 +13,8 @@ export class UserServices {
     otp_code: ''
   }
 
+  isLoggedIn = signal<boolean>(false)
+
   initialiseVerify = signal(false)
   showTimer = signal(false)
   checkResend = signal(false)

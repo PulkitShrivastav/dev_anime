@@ -1,5 +1,5 @@
 import { Component, HostListener, inject, signal, } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 import { HeaderComp } from "./files-componet/header-comp/header-comp";
 import { HttpClient } from '@angular/common/http';
 import { AppSyncService } from './AppServices/app-sync-service';
@@ -7,47 +7,60 @@ import { CommonMssgBar } from './files-componet/common-mssg-bar/common-mssg-bar'
 import { gsap } from 'gsap';
 import { CommonMssgService } from './AppServices/common-mssg-service';
 import { Loader } from "./files-componet/loader/loader";
+import { UserServices } from './AppServices/user-services';
+
+type response = {
+  message: string,
+  data: {
+    userID: number,
+    firstname: string,
+    lastname: string,
+    user_email: string,
+  }
+}
 
 @Component({
   selector: 'app-root',
   imports: [RouterOutlet, HeaderComp, CommonMssgBar],
   template: `
-  <div class="wrapper" [class.desktopSite]="widthOK()">
-    <app-header-comp />
-  <app-common-mssg-bar />
-  @if(widthOK()){
-      <router-outlet />
-  }
+  @if (loginChecked()) {
+    <div class="wrapper" [class.desktopSite]="widthOK()">
+      <app-header-comp />
+    <app-common-mssg-bar />
+    @if(widthOK()){
+        <router-outlet />
+    }
 
-  <!-- <button class="absolute top-0 left-0 h-[80px] w-[200px] bg-[white] text-[black] z-[5000]"
-  (click)="trigger()">
-    Trigger
-  </button> -->
+    <!-- <button class="absolute top-0 left-0 h-[80px] w-[200px] bg-[white] text-[black] z-[5000]"
+    (click)="trigger()">
+      Trigger
+    </button> -->
 
-  @if(!widthOK()){
-    <div class="absolute bg-white top-0 left-0 border-10px border-red h-full w-full z-[100] flex items-center justify-center">
-      <div class="w-full m-2 sm:w-[60vw] sm:rounded-2xl sm:border-2 sm:border-[#474554] 
-                  sm:bg-[#aca9bb]/80 flex-col justify-center">
-        <div class="text-[#474554] exile text-center py-2 px-4 border-b-2 border-[#474554] text-[16px]">Important Note</div>
-        <div class="text-[#474554] p-6 text-[12px] quicksand">
-          We’d like to let you know that the mobile and tablet versions of this tool are currently under development.
-          <br><br>We’re actively working on delivering a seamless, mobile-friendly experience, which will be available in an 
-          upcoming update.<br><br>We appreciate your interest and patience—thank you for visiting, and happy coding!
-        </div>
-        <div class="flex justify-center h-fit p-4">
-          <div (click)="desktopMode()"
-          class="cursor-pointer flex flex-col items-center w-fit text-[#ff9d69] font-bold josefin px-2 mt-4 
-          text-[12px] text-center">
-            <span id="demo" (pointerenter)="pointOnDemo('enter')"
-            (pointerleave)="pointOnDemo('leave')" class="inline-block text-[12px] py-1 px-2 rounded-lg demo_mode">
-            Continue to Desktop Site.</span>
-            <span id="demoUnderline" class="w-[100%] h-[1px] bg-[#474554]/50"></span>
+    @if(!widthOK()){
+      <div class="absolute bg-white top-0 left-0 border-10px border-red h-full w-full z-[100] flex items-center justify-center">
+        <div class="w-full m-2 sm:w-[60vw] sm:rounded-2xl sm:border-2 sm:border-[#474554] 
+                    sm:bg-[#aca9bb]/80 flex-col justify-center">
+          <div class="text-[#474554] exile text-center py-2 px-4 border-b-2 border-[#474554] text-[16px]">Important Note</div>
+          <div class="text-[#474554] p-6 text-[12px] quicksand">
+            We’d like to let you know that the mobile and tablet versions of this tool are currently under development.
+            <br><br>We’re actively working on delivering a seamless, mobile-friendly experience, which will be available in an 
+            upcoming update.<br><br>We appreciate your interest and patience—thank you for visiting, and happy coding!
+          </div>
+          <div class="flex justify-center h-fit p-4">
+            <div (click)="desktopMode()"
+            class="cursor-pointer flex flex-col items-center w-fit text-[#ff9d69] font-bold josefin px-2 mt-4 
+            text-[12px] text-center">
+              <span id="demo" (pointerenter)="pointOnDemo('enter')"
+              (pointerleave)="pointOnDemo('leave')" class="inline-block text-[12px] py-1 px-2 rounded-lg demo_mode">
+              Continue to Desktop Site.</span>
+              <span id="demoUnderline" class="w-[100%] h-[1px] bg-[#474554]/50"></span>
+            </div>
           </div>
         </div>
       </div>
+    }
     </div>
   }
-  <div>
   `,
   styles: `
 
@@ -77,13 +90,16 @@ import { Loader } from "./files-componet/loader/loader";
 
 export class App {
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private router: Router) { }
 
   appSyncServ = inject(AppSyncService)
   commonMssgServ = inject(CommonMssgService)
   widthOK = signal<boolean>(true)
   viewportWidht = window.innerWidth
   allowedWidth = 1130
+  userServ = inject(UserServices)
+
+  loginChecked = signal<boolean>(false)
 
   @HostListener('document:keydown', ['$event'])
   checkESC($event: Event) {
@@ -103,10 +119,28 @@ export class App {
       y: -100,
       opacity: 0,
     })
-    console.log(window.innerWidth, window.innerHeight)
+    // console.log(window.innerWidth, window.innerHeight)
     if (this.viewportWidht < this.allowedWidth) {
       this.widthOK.set(false)
     }
+
+    this.http.get<response>("api/check_login", { withCredentials: true }).subscribe(data => {
+      if (data.message === "success") {
+        const userData = data.data
+        this.userServ.user_login_details.email_address = userData.user_email
+        this.userServ.user_login_details.guest_id = userData.userID
+        this.userServ.user_login_details.firstname = userData.firstname
+        this.userServ.user_login_details.lastname = userData.lastname
+        this.loginChecked.set(true)
+        this.userServ.isLoggedIn.set(true)
+        console.log(this.userServ.user_login_details)
+        this.router.navigate(['files'])
+      } else {
+        this.userServ.isLoggedIn.set(true)
+        this.loginChecked.set(true)
+      }
+    })
+
   }
 
   ngAfterViewInit() {

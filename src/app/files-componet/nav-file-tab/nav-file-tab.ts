@@ -1,6 +1,6 @@
 import { Component, inject, input, output, signal } from '@angular/core';
 import { NgClass } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { Route, Router, RouterLink } from '@angular/router';
 import { AppSyncService } from '../../AppServices/app-sync-service';
 import { FilesService } from '../../AppServices/files-service';
 import { HttpClient } from '@angular/common/http';
@@ -89,7 +89,7 @@ import { UserServices } from '../../AppServices/user-services';
 })
 export class NavFileTab {
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private router: Router) { }
 
   hoverDiv = signal<boolean>(false)
   isActvTab = signal<boolean>(false)
@@ -119,13 +119,15 @@ export class NavFileTab {
       setTimeout(() => {
         this.commonMssgServ.commonMssgHide()
       }, 1500)
-    } else if (files.length === 1) {
+    }
+    else if (files.length === 1) {
       this.commonMssgServ.commonMssg.set('Cannot Close This File.')
       this.commonMssgServ.commonMssgShow()
       setTimeout(() => {
         this.commonMssgServ.commonMssgHide()
       }, 1500)
-    } else if (!this.appSyncServ.isSaved()[this.myFilename()]) {
+    }
+    else if (!this.appSyncServ.isSaved()[this.myFilename()]) {
       this.commonMssgServ.commonMssg.set(`Please Save Changes Before Closing.`)
       this.commonMssgServ.commonMssgShow()
       setTimeout(() => {
@@ -133,6 +135,11 @@ export class NavFileTab {
       }, 1500)
     }
     else {
+
+      // if (files.length === 1) {
+      //   this.router.navigate(['files'])
+      // }
+
       let queue = ''
       let newFileArray = []
       for (let file of files) {

@@ -1,11 +1,16 @@
 import { Component, inject, signal, input } from '@angular/core';
 import { NavButtonComp } from '../navButtonComp/navButtonComp';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { NgClass } from "@angular/common";
 import { gsap } from 'gsap/gsap-core';
 import { AppSyncService } from '../../AppServices/app-sync-service';
 import { PopUpService } from '../../AppServices/pop-up-service';
 import { UserServices } from '../../AppServices/user-services';
+import { HttpClient } from '@angular/common/http';
+
+type response = {
+  message: string,
+}
 
 @Component({
   selector: 'app-header-comp',
@@ -22,21 +27,23 @@ import { UserServices } from '../../AppServices/user-services';
         <span class="exile text-[24px]">A</span>
         <span class="exile text-[16px]">nime</span>
       </div>
-      <div class="w-fit text-[white] text-sm josefin mr-2">
+      <div class="w-fit text-[white] text-sm josefin mr-2 flex items-center gap-2">
         <!-- <app-nav-buttons title="Home"  /> -->
          <div>{{getUsername()}}</div>
-        <!-- @if(isLoggedIn()){
-          <app-nav-buttons title="Files"  />
-        } @else {
+        @if(userServ.isLoggedIn()){
+          <app-nav-buttons title="logout" (buttonClick)="logout()" />
+        }
+         <!-- @else {
           <app-nav-buttons [routerLink]="['/login']" title="Login" />
-        }-->
+        } -->
     </div>
   `,
   styles: ``,
 })
 export class HeaderComp {
 
-  isLoggedIn = signal<boolean>(false)
+  constructor(private http: HttpClient, private router: Router) { }
+
   appSyncServ = inject(AppSyncService)
   popUpServ = inject(PopUpService)
   userServ = inject(UserServices)
@@ -48,6 +55,20 @@ export class HeaderComp {
       return `${firstname} ${lastname}`
     }
     return 'Login'
+  }
+
+  logout() {
+    this.http.get<response>("/api/logout", { withCredentials: true }).subscribe(data => {
+      if (data.message === 'success') {
+        localStorage.clear()
+        this.userServ.user_login_details.guest_id = 0
+        this.userServ.user_login_details.email_address = ''
+        this.userServ.user_login_details.firstname = ''
+        this.userServ.user_login_details.lastname = ''
+        this.userServ.isLoggedIn.set(false)
+        this.router.navigate(['login'])
+      }
+    })
   }
 
   myanime() {

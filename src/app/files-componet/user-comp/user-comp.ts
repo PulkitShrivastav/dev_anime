@@ -148,6 +148,10 @@ export class UserComp {
     // this.popUpServ.openPopUp('error')
   }
 
+  ngOnInit() {
+    this.comoonMssgServ.commonMssgHide()
+  }
+
 }
 
 type DIVS = 'login' | 'signup' | 'verify' | 'forgot' | 'reset' 
